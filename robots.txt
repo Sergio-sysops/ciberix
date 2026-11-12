@@ -1,0 +1,4 @@
+# ⚠️ Mientras no se publique, la web tiene "noindex" en index.html
+User-agent: *
+Allow: /
+Sitemap: https://ciberix.es/sitemap.xml

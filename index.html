@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* Tema elegido antes (día/noche): se aplica antes de pintar para que no haya fogonazo */
+try { var t = localStorage.getItem('tema'); if (t === 'dia' || t === 'noche') document.documentElement.dataset.tema = t; } catch (e) {}</script>
+<title>Ciberix · IA y seguridad para tu negocio</title>
+<meta name="description" content="Un asistente con inteligencia artificial que coge el teléfono, da citas y responde en segundos. Y la seguridad de tu negocio, vigilada.">
+<!-- ⚠️ AL PUBLICAR: borrar la línea de abajo (noindex) para que Google la pueda encontrar -->
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://ciberix.es/">
+<link rel="icon" href="favicon.ico">
+<meta name="theme-color" content="#0f0c1e">
+<!-- Vista previa al compartir el enlace (WhatsApp, Facebook, LinkedIn, X) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Ciberix">
+<meta property="og:url" content="https://ciberix.es/">
+<meta property="og:title" content="Ciberix · IA y seguridad para tu negocio">
+<meta property="og:description" content="Un asistente con inteligencia artificial que coge el teléfono, da citas y responde en segundos. Y la seguridad de tu negocio, vigilada.">
+<meta property="og:image" content="https://ciberix.es/img/vista-previa.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo de Ciberix: Tu teléfono, siempre atendido. Aunque tú no puedas.">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Ficha para Google: qué es Ciberix (solo datos verdaderos) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ProfessionalService","name":"Ciberix","url":"https://ciberix.es/","logo":"https://ciberix.es/img/simbolo.svg","image":"https://ciberix.es/img/vista-previa.png","email":"hola@ciberix.es","description":"Asistentes de voz con inteligencia artificial, webs y ciberseguridad para negocios.","areaServed":"ES","inLanguage":"es"}
+</script>
+<style>
+:root{
+  --negro:#1d1d1f; --gris:#6e6e73; --claro:#f5f5f7; --blanco:#fff; --linea:#d2d2d7;
+  --azul:#0071e3; --c1:#22e3ff; --c2:#b44cff;
+  --grad:linear-gradient(90deg,#16b8d8,#9b3cf0);
+  --enlace:#0071e3; --tarjeta:#fff; --linea-suave:#e8e8ed;
+  --menu-fondo:rgba(255,255,255,.72); --menu-borde:rgba(0,0,0,.08);
+  color-scheme:light;
+}
+/* 🌙 MODO NOCHE: sale solo si el aparato está en oscuro (salvo que el usuario elija día) o con el botón */
+@media(prefers-color-scheme:dark){
+  :root:not([data-tema="dia"]){
+    --negro:#f5f5f7; --gris:#a1a1a6; --claro:#101012; --blanco:#000; --linea:#3a3a3c;
+    --enlace:#2997ff; --tarjeta:#1c1c1e; --linea-suave:#2c2c2e;
+    --menu-fondo:rgba(22,22,23,.72); --menu-borde:rgba(255,255,255,.1);
+    color-scheme:dark;
+  }
+}
+:root[data-tema="noche"]{
+  --negro:#f5f5f7; --gris:#a1a1a6; --claro:#101012; --blanco:#000; --linea:#3a3a3c;
+  --enlace:#2997ff; --tarjeta:#1c1c1e; --linea-suave:#2c2c2e;
+  --menu-fondo:rgba(22,22,23,.72); --menu-borde:rgba(255,255,255,.1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Ubuntu Sans","Segoe UI",Roboto,sans-serif;color:var(--negro);background:var(--blanco);-webkit-font-smoothing:antialiased;line-height:1.47;letter-spacing:-.01em}
+a{color:var(--enlace);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;display:block}
+.wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+.ancho{max-width:1200px}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* Menú */
+.menu{position:sticky;top:0;z-index:50;background:var(--menu-fondo);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--menu-borde)}
+.menu .wrap{display:flex;align-items:center;justify-content:space-between;height:52px;max-width:1000px}
+.marca{display:flex;align-items:center;gap:8px;color:var(--negro);font-weight:700;font-size:19px;letter-spacing:-.02em}
+.marca:hover{text-decoration:none}
+.marca img{width:24px;height:24px}
+.menu nav{display:flex;align-items:center;gap:26px}
+.menu nav a{color:var(--negro);font-size:13px;opacity:.85}
+.menu nav a:hover{opacity:1;text-decoration:none}
+.menu nav a.pildora{opacity:1}
+/* Enlaces del menú: en ordenador van en fila; en el móvil, dentro del panel del botón ☰ */
+.enlaces-menu{display:contents}
+.tema-texto,.hamburguesa{display:none}
+@media(max-width:720px){
+  .hamburguesa{display:flex;flex-direction:column;justify-content:center;gap:5px;width:34px;height:34px;padding:7px;margin-right:-7px;
+    background:none;border:0;cursor:pointer}
+  .hamburguesa span{display:block;height:2px;border-radius:2px;background:var(--negro);transition:transform .25s ease,opacity .2s ease}
+  .menu-abierto .hamburguesa span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .menu-abierto .hamburguesa span:nth-child(2){opacity:0}
+  .menu-abierto .hamburguesa span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .enlaces-menu{display:none;position:fixed;top:52px;left:0;right:0;flex-direction:column;padding:8px 22px 18px;background-color:var(--blanco)!important;
+    background:var(--menu-fondo);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+    border-bottom:1px solid var(--menu-borde);box-shadow:0 20px 40px rgba(0,0,0,.12)}
+  .menu-abierto .enlaces-menu{display:flex}
+  .menu nav .enlaces-menu a,.tema-texto{display:block;font-size:20px;font-weight:600;opacity:1;padding:13px 0;
+    border-bottom:0;color:var(--negro);text-align:left;
+    background:linear-gradient(90deg,#16b8d8,#9b3cf0 70%,transparent) bottom left/100% 1px no-repeat}
+  .tema-texto{background:none!important;border:0;border-bottom:0;font:inherit;font-size:20px;font-weight:600;cursor:pointer;color:var(--enlace)}
+  .menu .tema{display:none}            /* en el móvil el día/noche va dentro del panel, con su texto */
+}
+@media(prefers-reduced-motion:reduce){.hamburguesa span{transition:none}}
+/* Botón día/noche: luna de día, sol de noche */
+.tema{background:none;border:0;padding:6px;margin:-6px 0;cursor:pointer;color:var(--negro);opacity:.85;display:flex;border-radius:50%}
+.tema:hover{opacity:1;background:var(--linea-suave)}
+.tema:focus-visible{outline:2px solid var(--enlace);outline-offset:2px}
+.tema svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tema .luna{fill:currentColor;stroke:none}
+.tema .sol{display:none}
+.es-noche .tema .luna{display:none}
+.es-noche .tema .sol{display:block}
+@media(max-width:720px){.menu nav{gap:14px}}
+
+/* Botones */
+/* Botón: al pasar el ratón entra el degradado de Ciberix desde la izquierda (el efecto de ayer) */
+.pildora{display:inline-block;background:var(--azul);color:#fff!important;border-radius:980px;padding:11px 22px;font-size:17px;font-weight:500;
+  position:relative;overflow:hidden;isolation:isolate;transition:transform .2s ease,box-shadow .35s ease}
+.pildora::before{content:"";position:absolute;inset:0;background:var(--grad);z-index:-1;
+  transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.pildora:hover{text-decoration:none;box-shadow:0 8px 24px rgba(155,60,240,.28)}
+.pildora:hover::before{transform:scaleX(1)}
+.pildora:active{transform:scale(.97)}
+.menu .pildora{padding:5px 13px;font-size:13px}
+/* Enlace: la flechita se desliza un poco */
+.enlace{font-size:19px}
+.enlace::after{content:"›";display:inline-block;margin-left:5px;transition:transform .25s ease}
+.enlace:hover{text-decoration:none}
+.enlace:hover::after{transform:translateX(4px)}
+@media(prefers-reduced-motion:reduce){.pildora,.pildora::before,.enlace::after{transition:none}}
+.botones{display:flex;gap:30px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:30px}
+/* Resumen en el bolsillo: móvil + tarjeta flotante que sale de la pantalla */
+.bolsillo .wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.bolsillo-texto .entrada{margin-left:0}
+.bolsillo-escena{position:relative;display:flex;justify-content:center;padding:20px 0}
+.movil{width:270px;height:550px;border-radius:48px;background:#1a1a1c;padding:11px;
+  box-shadow:0 0 0 2px #3a3a3c,0 40px 80px rgba(0,0,0,.22);transform:rotate(-4deg)}
+.pantalla{height:100%;border-radius:38px;overflow:hidden;position:relative;padding:58px 14px 0;text-align:center;color:#fff;
+  background:radial-gradient(120% 70% at 20% 10%,#1f6f8b 0,transparent 60%),radial-gradient(120% 80% at 90% 90%,#5b2a86 0,transparent 60%),#0d0d12}
+.isla{position:absolute;top:12px;left:50%;width:84px;height:24px;margin-left:-42px;border-radius:20px;background:#000}
+.hora{font-size:64px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.fecha{font-size:14px;opacity:.8;margin:6px 0 34px}
+.aviso{display:flex;gap:9px;align-items:center;text-align:left;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);border-radius:16px;padding:10px 11px;font-size:12px;line-height:1.3;margin-bottom:8px}
+.aviso img{width:26px;height:26px;background:#fff;border-radius:7px;padding:4px;flex:none}
+.aviso b{display:block}
+.aviso.tenue{opacity:.6}
+.tarjeta-flotante{position:absolute;right:-10px;top:46%;width:300px;background:var(--tarjeta);color:var(--negro);border-radius:22px;
+  padding:18px 20px;box-shadow:0 30px 70px rgba(0,0,0,.2),0 0 0 1px var(--linea-suave);transform:rotate(2deg);
+  animation:flotar 6s ease-in-out infinite;text-align:left}
+@keyframes flotar{0%,100%{transform:rotate(2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-12px)}}
+.tf-cabecera{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gris);margin-bottom:12px}
+.tf-cabecera img{width:18px;height:18px}
+.tf-cabecera time{margin-left:auto}
+.tf-quien{font-weight:700;font-size:17px}
+.tf-motivo{font-size:15px;color:var(--gris);margin:4px 0 12px;line-height:1.35}
+.tf-hecho{display:flex;gap:8px;align-items:flex-start;font-size:14px;padding:8px 0;border-top:1px solid var(--linea-suave)}
+.tf-hecho svg{width:16px;height:16px;margin-top:2px;fill:none;stroke:url(#g1);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.tf-ejemplo{position:absolute;top:-10px;right:16px;font-size:11px;font-weight:600;background:var(--grad);color:#fff;padding:3px 9px;border-radius:20px}
+@media(max-width:860px){
+  .bolsillo .wrap{grid-template-columns:1fr;text-align:center}
+  .bolsillo-texto .entrada{margin-left:auto}
+  .bolsillo-escena{flex-direction:column;align-items:center}
+  .movil{width:230px;height:470px}
+  .hora{font-size:54px}
+  .tarjeta-flotante{position:relative;right:auto;top:auto;margin-top:-170px;width:min(300px,88vw)}
+}
+@media(prefers-reduced-motion:reduce){.tarjeta-flotante{animation:none}}
+/* 🕹️ Seguridad: pantalla de máquina recreativa */
+@font-face{font-family:"Pixel";src:url("fuentes/PressStart2P.ttf") format("truetype");font-display:swap}
+.arcade{position:relative;max-width:960px;margin:0 auto 10px;padding:34px 18px 40px;background:#0b0b1a;color:#fff;
+  border:4px solid #22e3ff;box-shadow:8px 8px 0 #b44cff,0 0 60px rgba(34,227,255,.15) inset;overflow:hidden}
+.arcade::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px)}   /* rayas de tele antigua */
+.arcade-marcador,.arcade-ante,.arcade-titulo,.arcade-start{font-family:"Pixel",monospace;-webkit-font-smoothing:none;letter-spacing:0}
+.arcade-marcador{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#ff4fd8;margin-bottom:26px}
+.arcade-marcador b{color:#fff;font-weight:400}
+.arcade-escudo{width:66px;height:78px;display:block;margin:0 auto 18px;filter:drop-shadow(0 0 12px rgba(34,227,255,.6));
+  animation:arcadeFlota 1.2s steps(2) infinite}
+@keyframes arcadeFlota{50%{transform:translateY(-4px)}}
+.arcade-ante{font-size:12px;color:#a1a1a6;letter-spacing:.1em;margin:0 0 14px}
+.arcade-titulo{font-size:clamp(18px,3.4vw,38px);line-height:1.6;min-height:3.2em;margin:0;font-weight:400;
+  color:#fff;text-shadow:4px 4px 0 #b44cff,0 0 18px rgba(255,255,255,.35)}
+.arcade-titulo .px{color:#22e3ff;text-shadow:4px 4px 0 #ff4fd8,0 0 22px rgba(34,227,255,.7)}
+.arcade-cursor{display:inline-block;width:.5em;height:.85em;background:#ff4fd8;margin-left:.15em;vertical-align:-.05em;
+  animation:arcadeParpadeo 1s steps(1) infinite}
+.arcade .entrada{color:#c9d6e3;position:relative;z-index:1}
+.arcade-start{display:inline-block;font-size:13px;color:#ffe14d;margin-top:30px;padding:8px 4px;text-decoration:none;
+  position:relative;z-index:1;animation:arcadeParpadeo 1s steps(1) infinite}
+.arcade-start:hover,.arcade-start:focus-visible{animation:none;color:#fff;text-shadow:2px 2px 0 #ff4fd8}
+@keyframes arcadeParpadeo{50%{opacity:0}}
+#nivel1{scroll-margin-top:70px}   /* que el menú fijo no tape el 01 al pulsar START */
+.oscuro .arcade-continuar{display:inline-block;font-family:"Pixel",monospace;-webkit-font-smoothing:none;font-size:12px;color:#ffe14d;
+  margin-top:28px;padding:8px 4px;text-decoration:none;line-height:1.8}
+.oscuro .arcade-continuar:hover,.oscuro .arcade-continuar:focus-visible{color:#fff;text-shadow:2px 2px 0 #ff4fd8}
+@media(max-width:620px){.oscuro .arcade-continuar{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.arcade-escudo,.arcade-cursor,.arcade-start{animation:none}}
+@media(max-width:620px){.arcade{padding:24px 14px 30px}.arcade-marcador{font-size:9px;margin-bottom:18px}.arcade-ante{font-size:10px}}
+
+/* Franja de confianza bajo la portada */
+.confianza{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;margin-top:46px;font-size:14px;color:var(--gris)}
+.confianza li{display:flex;align-items:center;gap:7px}
+.confianza svg{width:16px;height:16px;fill:none;stroke:url(#g1);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+@media(max-width:620px){.confianza{flex-direction:column;align-items:center;gap:8px;margin-top:36px}}
+
+/* Bloques */
+section{padding:110px 0}
+.centro{text-align:center}
+.antetitulo{font-size:21px;font-weight:600;color:var(--gris);margin-bottom:8px}
+h1{font-size:clamp(44px,8vw,84px);line-height:1.05;letter-spacing:-.035em;font-weight:700}
+h2{font-size:clamp(36px,5.6vw,60px);line-height:1.07;letter-spacing:-.03em;font-weight:700}
+h3{font-size:24px;line-height:1.17;letter-spacing:-.02em;font-weight:700}
+.entrada{font-size:clamp(19px,2.4vw,24px);color:var(--gris);max-width:720px;margin:20px auto 0;line-height:1.38}
+.oscuro{background:#000;color:#f5f5f7}
+.oscuro .entrada,.oscuro .gris{color:#a1a1a6}
+.oscuro a{color:#2997ff}
+.gris-fondo{background:var(--claro)}
+
+/* Hero */
+.hero{padding:90px 0 0;overflow:hidden}
+.hero h1 .grad{display:block}
+
+/* Recuadro que crece al bajar. Dentro, como si fuera un vídeo: el logo vivo */
+.pista-logo{height:300vh;position:relative;padding:0}
+.marco-logo{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ventana{position:relative;width:min(900px,90vw);height:min(506px,50.6vw);background:#000;border-radius:28px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.22);will-change:width,height}
+.ventana canvas,#logoCentro,.frase{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.ventana canvas{width:100vw;height:100vh}
+#logoCentro{text-align:center;opacity:0;transition:opacity 1.1s ease}
+#logoCentro img{width:150px;height:150px;margin:0 auto}
+#logoCentro p{color:#f5f5f7;font-size:44px;font-weight:700;letter-spacing:-.03em;margin-top:14px}
+.frase{width:min(1000px,92vw);text-align:center;color:#f5f5f7;opacity:0;pointer-events:none}
+.sin-efecto{display:none}
+.frase .entrada{color:#a1a1a6}
+.frase .cifras{margin-top:50px}
+#fraseResto{opacity:0}
+@media(max-width:620px){.frase .cifras{grid-template-columns:repeat(3,1fr);gap:10px;margin-top:30px}.frase .cifra b{font-size:34px}.frase .cifra span{font-size:12px;display:block}.frase h2{font-size:32px}.frase .entrada{font-size:16px}}
+@media(max-width:620px){#logoCentro img{width:100px;height:100px}#logoCentro p{font-size:32px}}
+@media(prefers-reduced-motion:reduce){.pista-logo{height:auto;padding:40px 0}.marco-logo{position:static;height:auto}.ventana canvas,.frase{display:none}#logoCentro{opacity:1;transition:none}.sin-efecto{display:block}}
+
+/* Cifras */
+.cifras{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:70px}
+.cifra b{display:block;font-size:clamp(48px,7vw,80px);letter-spacing:-.04em;line-height:1}
+.cifra span{color:#a1a1a6;font-size:17px}
+@media(max-width:620px){.cifras{grid-template-columns:1fr;gap:40px}}
+
+/* Rejilla de tarjetas */
+.rejilla{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px}
+.tarjeta{background:var(--tarjeta);border-radius:28px;padding:36px 30px;min-height:240px;display:flex;flex-direction:column}
+.gris-fondo .tarjeta{background:var(--tarjeta)}
+.tarjeta.grande{grid-column:span 2}
+.tarjeta p{color:var(--gris);font-size:17px;margin-top:10px}
+.tarjeta .icono{width:44px;height:44px;margin-bottom:auto;padding-bottom:28px;box-sizing:content-box}
+.lista-seguimiento{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:18px 28px;margin-top:26px}
+.lista-seguimiento.tres{grid-template-columns:repeat(3,1fr)}
+.lista-seguimiento li{border-top:1px solid var(--linea-suave);padding-top:12px}
+.lista-seguimiento b{display:block;font-size:16px}
+.lista-seguimiento span{color:var(--gris);font-size:15px}
+@media(max-width:820px){.rejilla{grid-template-columns:1fr}.tarjeta.grande{grid-column:auto}.lista-seguimiento,.lista-seguimiento.tres{grid-template-columns:1fr}}
+
+/* Pasos */
+.pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:60px;text-align:left}
+.paso .num{font-size:56px;font-weight:700;letter-spacing:-.04em;line-height:1;margin-bottom:14px}
+.paso p{color:var(--gris);font-size:17px;margin-top:8px}
+@media(max-width:720px){.pasos{grid-template-columns:1fr}}
+
+/* Webs */
+.webs{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:60px}
+.web{background:var(--claro);border-radius:28px;overflow:hidden;display:flex;flex-direction:column}
+.web .foto{padding:28px 28px 0}
+.web .foto img{border-radius:14px 14px 0 0;box-shadow:0 10px 30px rgba(0,0,0,.12);aspect-ratio:16/10;object-fit:cover;object-position:top}
+.web .texto{padding:24px 28px 30px}
+.web .tipo{font-size:14px;color:var(--gris);font-weight:600}
+.web p{color:var(--gris);font-size:17px;margin:6px 0 12px}
+.nota{color:var(--gris);font-size:14px;text-align:center;margin-top:24px}
+@media(max-width:720px){.webs{grid-template-columns:1fr}}
+
+/* Seguridad */
+.regalo{margin-top:40px;font-size:19px}
+.pilares{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px}
+.pilar{background:rgba(22,22,23,.8);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #2a2a2c;border-radius:28px;padding:36px 30px}
+#seguridad{position:relative;overflow:hidden}
+/* Punto de mira propio para "cazar" las X (círculo con marcas y punto rojo) */
+#seguridad,#seguridad *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%2322e3ff' stroke-width='1.6'/%3E%3Cpath d='M16 1v8M16 23v8M1 16h8M23 16h8' stroke='%23b44cff' stroke-width='1.6'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%23ff3b5c'/%3E%3C/svg%3E") 16 16,crosshair}
+
+/* En el móvil no hay cursor: al tocar aparece el punto de mira un momento */
+.mira{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;z-index:3;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%2322e3ff' stroke-width='1.6'/%3E%3Cpath d='M16 1v8M16 23v8M1 16h8M23 16h8' stroke='%23b44cff' stroke-width='1.6'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%23ff3b5c'/%3E%3C/svg%3E") center/contain no-repeat;animation:mira .45s ease-out forwards}
+@keyframes mira{0%{transform:scale(1.6);opacity:0}30%{transform:scale(1);opacity:1}100%{transform:scale(.9);opacity:0}}
+@media(prefers-reduced-motion:reduce){.mira{animation:none;opacity:0}}
+#seguridad .banco{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}   /* encima del contenido, pero deja pasar los clics */
+#seguridad>.wrap{position:relative;z-index:1}
+.paso-seg{font-size:15px;font-weight:700;letter-spacing:.1em;margin-bottom:10px}
+.pilar h3{font-size:30px;color:#ffe14d}
+.pilar .resumen{color:#a1a1a6;font-size:17px;margin:8px 0 22px}
+.pilar ul{list-style:none}
+.pilar li{border-top:1px solid #2a2a2c;padding:14px 0}
+.pilar li b{display:block;font-size:16px;color:#f5f5f7}
+.pilar li span{color:#a1a1a6;font-size:15px}
+@media(max-width:900px){.pilares{grid-template-columns:1fr}}
+
+/* Planes */
+.planes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:60px}
+.plan{border:1px solid var(--linea);border-radius:22px;padding:30px 24px;display:flex;flex-direction:column;background:var(--tarjeta)}
+.plan.destacado{border:2px solid transparent;background:linear-gradient(var(--tarjeta),var(--tarjeta)) padding-box,var(--grad) border-box}
+.plan .eti{font-size:12px;font-weight:600;color:#9b3cf0;margin-bottom:8px;min-height:16px}
+.plan h3{font-size:21px}
+.plan>p{color:var(--gris);font-size:15px;margin:8px 0 18px}
+.plan ul{list-style:none;font-size:15px;margin-bottom:24px;flex:1}
+.plan li{padding:9px 0;border-top:1px solid var(--linea-suave)}
+.plan .pildora{text-align:center;font-size:15px}
+.plan .pildora.sec{background:transparent;color:var(--enlace)!important;border:1px solid var(--enlace)}
+.plan .pildora.sec{transition:transform .2s ease,box-shadow .35s ease,color .3s ease,border-color .3s ease}
+.plan .pildora.sec:hover{color:#fff!important;border-color:transparent}
+@media(max-width:960px){.planes{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.planes{grid-template-columns:1fr}}
+
+/* Preguntas */
+.preguntas{max-width:760px;margin:50px auto 0}
+details{border-bottom:1px solid var(--linea)}
+summary{list-style:none;cursor:pointer;padding:22px 0;font-size:19px;font-weight:600;display:flex;justify-content:space-between;gap:20px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-weight:300;font-size:26px;line-height:1;color:var(--gris);transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--gris);font-size:17px;padding:0 0 22px}
+
+/* Formulario */
+form{max-width:560px;margin:50px auto 0;display:grid;gap:12px}
+input,select{width:100%;font:inherit;font-size:17px;padding:15px 16px;border:1px solid var(--linea);border-radius:12px;background:var(--tarjeta);color:var(--negro)}
+input:focus,select:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 4px rgba(0,113,227,.15)}
+.tipo-cliente{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:14px;background:var(--claro);border:1px solid var(--linea)}
+.tipo-cliente input{position:absolute;opacity:0;pointer-events:none;width:auto}
+.tipo-cliente span{display:block;padding:10px;border-radius:10px;font-size:16px;color:var(--gris);cursor:pointer;transition:background .2s,color .2s}
+.tipo-cliente input:checked+span{background:var(--azul);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(0,113,227,.3)}
+.tipo-cliente input:focus-visible+span{outline:2px solid var(--azul)}
+.casilla{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--gris);text-align:left}
+.casilla input{width:auto;margin-top:3px}
+form .pildora{border:0;cursor:pointer;font:inherit;font-size:17px;padding:14px}
+.pequeno{font-size:14px;color:var(--gris);text-align:center}
+.info-datos{font-size:12px;text-align:left;line-height:1.45}
+.trampa{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.gracias{font-size:21px;line-height:1.4;text-align:center;padding:30px 20px;border-radius:22px;background:var(--tarjeta);
+  box-shadow:0 0 0 1px var(--linea-suave)}
+form button:disabled{opacity:.6;cursor:wait}
+/* Ventana del formulario: se abre encima sin mover la página (en el móvil sube desde abajo) */
+.ventana-demo{margin:auto;width:min(600px,calc(100% - 32px));max-height:calc(100dvh - 40px);overflow:auto;border:0;border-radius:28px;
+  padding:44px 34px 30px;background:var(--blanco);color:var(--negro);text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.ventana-demo::backdrop{background:rgba(0,0,0,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.ventana-demo[open]{animation:vdEntra .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes vdEntra{from{opacity:0;transform:translateY(24px) scale(.98)}}
+.ventana-demo h2{font-size:clamp(28px,5vw,40px);line-height:1.1;margin:0 0 10px}
+.ventana-demo .entrada{font-size:17px;color:var(--gris);margin:0}
+.ventana-demo form{margin-top:26px}
+.vd-cerrar{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--claro);color:var(--negro);font-size:18px;line-height:1}
+.vd-cerrar:hover,.vd-cerrar:focus-visible{background:var(--linea-suave,#ddd)}
+html.vd-abierta{overflow:hidden}
+@media(max-width:620px){
+  .ventana-demo{width:100%;max-width:100%;margin:auto 0 0;border-radius:24px 24px 0 0;padding:40px 20px 24px;max-height:92dvh}
+  .ventana-demo[open]{animation:vdSube .32s cubic-bezier(.2,.8,.2,1)}
+  @keyframes vdSube{from{transform:translateY(100%)}}
+}
+@media(prefers-reduced-motion:reduce){.ventana-demo[open]{animation:none}}
+html.retro .ventana-demo{background:#12122a;color:#e8f6ff;border-radius:0;box-shadow:6px 6px 0 #ff4fd8}
+
+/* Pie */
+footer{background:var(--claro);font-size:12px;color:var(--gris);padding:30px 0 40px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--linea);padding-top:20px}
+footer a{color:var(--gris);margin-left:16px}
+
+/* Aparecer al bajar */
+.aparece{opacity:0;transform:translateY(30px);transition:opacity .9s ease,transform .9s ease}
+.aparece.ya{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.aparece{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+/* 🎮 MODO RETRO (secreto): código Konami ↑↑↓↓←→←→ B A · en el móvil: deslizar igual + 2 toques */
+:root.retro{
+  --negro:#e8f6ff; --gris:#9fb3c8; --claro:#14142b; --blanco:#0b0b1a; --linea:#22e3ff;
+  --azul:#b44cff; --grad:linear-gradient(90deg,#22e3ff 0 50%,#ff4fd8 50% 100%);
+}
+html.retro body{font-family:"Courier New",ui-monospace,"DejaVu Sans Mono",monospace;-webkit-font-smoothing:none;background:#0b0b1a}
+html.retro *{border-radius:0!important}
+html.retro .aparece{opacity:1!important;transform:none!important;transition:none!important}  /* en 8 bits no hay fundidos */
+html.retro .menu{background:rgba(11,11,26,.92);border-bottom:4px solid #22e3ff}
+html.retro .enlaces-menu{background:#0b0b1a;border-bottom:4px solid #22e3ff}
+html.retro section,html.retro .oscuro,html.retro .gris-fondo,html.retro footer{background:#0b0b1a!important;color:#e8f6ff}
+html.retro .gris-fondo{background:#12122a!important}
+html.retro h1,html.retro h2,html.retro h3{text-transform:uppercase;letter-spacing:.02em;text-shadow:4px 4px 0 #b44cff}
+html.retro .grad{background:none;color:#22e3ff;-webkit-text-fill-color:#22e3ff;text-shadow:4px 4px 0 #ff4fd8}
+html.retro .paso-seg{text-shadow:2px 2px 0 #ff4fd8}
+html.retro .tarjeta,html.retro .plan,html.retro .web,html.retro .pilar,html.retro .paso,html.retro .tarjeta-flotante{
+  background:#14142b!important;border:4px solid #22e3ff!important;box-shadow:6px 6px 0 #b44cff!important;backdrop-filter:none!important}
+html.retro .pildora{background:#7a1fd6;box-shadow:4px 4px 0 #22e3ff;font-family:inherit;font-weight:700;text-transform:uppercase;
+  text-shadow:2px 2px 0 #000}
+html.retro a:not(.pildora):not(.marca){color:#22e3ff}
+html.retro .entrada{color:#c9d6e3}
+html.retro .pildora::before{background:#ff4fd8}
+html.retro img,html.retro canvas,html.retro svg{image-rendering:pixelated}
+html.retro input,html.retro select,html.retro textarea{background:#0b0b1a;color:#e8f6ff;border:3px solid #22e3ff;font-family:inherit}
+html.retro body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px)}
+#retroCartel{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:14px;
+  background:#0b0b1a;color:#e8f6ff;border:4px solid #22e3ff;box-shadow:6px 6px 0 #ff4fd8;padding:10px 14px;
+  font:700 14px/1.2 "Courier New",ui-monospace,monospace;text-transform:uppercase;max-width:calc(100vw - 32px)}
+#retroCartel .parpadeo{color:#ff4fd8;animation:retroParpadeo 1s steps(1) infinite}
+#retroCartel button{font:inherit;background:#b44cff;color:#fff;border:0;padding:6px 10px;cursor:pointer;box-shadow:3px 3px 0 #22e3ff}
+@keyframes retroParpadeo{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){#retroCartel .parpadeo{animation:none}}
+@media(max-width:620px){#retroCartel{white-space:nowrap;font-size:12px;gap:10px}#retroCartel .largo{display:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16b8d8"/><stop offset="1" stop-color="#9b3cf0"/></linearGradient></defs></svg>
+
+<header class="menu"><div class="wrap">
+  <a class="marca" href="#"><img src="img/simbolo.svg" alt=""> Ciberix</a>
+  <nav>
+    <div class="enlaces-menu" id="enlacesMenu">
+      <a href="#asistente">Asistente</a>
+      <a href="#webs">Webs</a>
+      <a href="#redes">Redes</a>
+      <a href="#seguridad">Seguridad</a>
+      <a href="#planes">Planes</a>
+      <a href="#preguntas">Preguntas</a>
+      <button class="tema-texto" id="temaTexto" type="button">Modo noche</button>
+    </div>
+    <button class="tema" id="botonTema" type="button" aria-label="Cambiar a modo noche" title="Modo noche">
+      <svg class="luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      <svg class="sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+    </button>
+    <a class="pildora" href="#demo">Pedir demo</a>
+    <button class="hamburguesa" id="hamburguesa" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="enlacesMenu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</div></header>
+
+<!-- PORTADA -->
+<section class="hero centro"><div class="wrap">
+  <p class="antetitulo">Recepcionista con inteligencia artificial</p>
+  <h1>Tu teléfono, siempre atendido. <span class="grad">Aunque tú no puedas.</span></h1>
+  <p class="entrada">Tu asistente coge el teléfono, responde en segundos y da citas por ti. De día, de noche y aunque llamen varios a la vez.</p>
+  <div class="botones">
+    <a class="pildora" href="#demo">Pedir una demo gratis</a>
+    <a class="enlace" href="#asistente">Cómo funciona</a>
+  </div>
+  <!-- Franja de confianza: SOLO cosas verdaderas (añadir "Datos en Europa"/RGPD cuando esté confirmado con Retell) -->
+  <ul class="confianza" aria-label="Garantías">
+    <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Sin permanencia</li>
+    <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Avisa de que es una IA</li>
+    <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Un solo contacto, de principio a fin</li>
+    <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Precio cerrado tras la demo</li>
+  </ul>
+</div></section>
+
+<!-- EL RECUADRO QUE CRECE AL BAJAR (con el logo vivo dentro) -->
+<section class="pista-logo" id="asistente"><div class="marco-logo">
+  <div class="ventana" id="ventana" aria-hidden="true">
+    <canvas id="lienzo"></canvas>
+    <div id="logoCentro"><img src="img/simbolo.svg" alt="" id="logoImg"><p>Ciberi<span class="grad">x</span></p></div>
+    <div class="frase" id="frase">
+      <h2 id="fraseTitulo">Nadie espera.<br><span class="grad">Nadie se queda sin respuesta.</span></h2>
+      <div id="fraseResto">
+        <p class="entrada">Tu asistente atiende al momento y varias llamadas a la vez.</p>
+        <div class="cifras">
+          <div class="cifra"><b>24/7</b><span>Atiende siempre, también de noche y en festivos.</span></div>
+          <div class="cifra"><b>3 s</b><span>Lo que tarda en coger el teléfono.</span></div>
+          <div class="cifra"><b>0</b><span>Llamadas que se quedan sin respuesta.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- TODAS A LA VEZ -->
+<section class="oscuro centro sin-efecto"><div class="wrap">
+  <h2>Nadie espera.<br><span class="grad">Nadie se queda sin respuesta.</span></h2>
+  <p class="entrada aparece">Tu asistente atiende al momento y varias llamadas a la vez.</p>
+  <div class="cifras aparece">
+    <div class="cifra"><b>24/7</b><span>Atiende siempre, también de noche y en festivos.</span></div>
+    <div class="cifra"><b>3 s</b><span>Lo que tarda en coger el teléfono.</span></div>
+    <div class="cifra"><b>0</b><span>Llamadas que se quedan sin respuesta.</span></div>
+  </div>
+</div></section>
+
+<!-- RESUMEN EN EL MÓVIL (tarjeta flotante que sale de la pantalla) -->
+<section class="bolsillo"><div class="wrap ancho">
+  <div class="bolsillo-texto aparece">
+    <p class="antetitulo">Después de cada llamada</p>
+    <h2>Lo importante, <span class="grad">en tu bolsillo.</span></h2>
+    <p class="entrada">Quién llamó, qué quería y qué se ha hecho. Te llega el resumen al momento, sin escuchar grabaciones.</p>
+  </div>
+  <div class="bolsillo-escena aparece" aria-label="Ejemplo: resumen de una llamada en el móvil" role="img">
+    <div class="movil" aria-hidden="true">
+      <div class="pantalla">
+        <div class="isla"></div>
+        <p class="hora">10:42</p>
+        <p class="fecha">jueves, 12 de marzo</p>
+        <div class="aviso"><img src="img/simbolo.svg" alt=""><span><b>Ciberix</b> Nueva cita en tu agenda</span></div>
+        <div class="aviso tenue"><img src="img/simbolo.svg" alt=""><span><b>Ciberix</b> 3 llamadas atendidas hoy</span></div>
+      </div>
+    </div>
+    <div class="tarjeta-flotante" aria-hidden="true">
+      <div class="tf-cabecera">
+        <img src="img/simbolo.svg" alt="">
+        <span>Resumen de llamada</span>
+        <time>10:41</time>
+      </div>
+      <p class="tf-quien">María · 612 ••• 482</p>
+      <p class="tf-motivo">Quiere cita para una limpieza dental. Prefiere por la tarde.</p>
+      <div class="tf-hecho">
+        <svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7"/></svg>
+        <span>Cita reservada: <b>jueves 19, 17:30</b></span>
+      </div>
+      <div class="tf-hecho">
+        <svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7"/></svg>
+        <span>Recordatorio por WhatsApp el día antes</span>
+      </div>
+      <p class="tf-ejemplo">Ejemplo</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- QUÉ HACE -->
+<section class="gris-fondo"><div class="wrap ancho">
+  <div class="centro">
+    <h2 class="aparece">Todo lo que hace por ti.</h2>
+    <p class="entrada aparece">Empieza por lo que más te urge. Lo demás se suma cuando lo necesites.</p>
+  </div>
+  <div class="rejilla">
+    <div class="tarjeta grande aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+      <h3>Recepcionista de voz</h3>
+      <p>Coge el teléfono cuando tú no puedes, resuelve dudas, da citas y te pasa los recados. Se presenta como asistente virtual y habla con naturalidad.</p>
+    </div>
+    <div class="tarjeta aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+      <h3>Chat y WhatsApp</h3>
+      <p>Responde al momento en tu web y en WhatsApp.</p>
+    </div>
+    <div class="tarjeta grande aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+      <h3>Seguimiento automático</h3>
+      <p>Contestar es solo el principio. Después, tu asistente se encarga de que ningún cliente se enfríe.</p>
+      <ul class="lista-seguimiento tres">
+        <li><b>Llamada perdida</b><span>Le escribe por WhatsApp al momento.</span></li>
+        <li><b>Antes de la cita</b><span>Se la recuerda y, si cancela, el hueco no se queda vacío.</span></li>
+        <li><b>Después de la visita</b><span>Le pide su opinión y una reseña en Google.</span></li>
+      </ul>
+    </div>
+    <div class="tarjeta aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>
+      <h3>Agenda</h3>
+      <p>Tus clientes se apuntan solos en los huecos libres.</p>
+    </div>
+    <div class="tarjeta aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+      <h3>Presupuestos</h3>
+      <p>Con tu formato, listos en minutos.</p>
+    </div>
+    <div class="tarjeta grande aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+      <h3>Control de clientes con IA</h3>
+      <p>Si quieres, la gestión entera de tus clientes la lleva la IA. Tú solo decides.</p>
+      <ul class="lista-seguimiento tres">
+        <li><b>Fichas que se rellenan solas</b><span>Con cada llamada, chat o cita.</span></li>
+        <li><b>A quién llamar hoy</b><span>Te lo dice cada mañana, y por qué.</span></li>
+        <li><b>Informe mensual</b><span>Todo lo que ha hecho por tu negocio.</span></li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- CÓMO FUNCIONA -->
+<section><div class="wrap centro">
+  <h2 class="aparece">En marcha en días.<br><span style="color:var(--gris)">Sin tocar nada técnico.</span></h2>
+  <div class="pasos">
+    <div class="paso aparece"><div class="num grad">1</div><h3>Nos cuentas</h3><p>Tus servicios, horarios, precios y cómo quieres que se atienda a tus clientes.</p></div>
+    <div class="paso aparece"><div class="num grad">2</div><h3>Lo preparamos</h3><p>Configuramos tu asistente con la información real de tu negocio y lo probamos contigo.</p></div>
+    <div class="paso aparece"><div class="num grad">3</div><h3>Empieza a atender</h3><p>Coge llamadas y da citas. Cada mes ves en tu panel todo lo que ha hecho.</p></div>
+  </div>
+</div></section>
+
+<!-- WEBS -->
+<section id="webs" style="padding-top:0"><div class="wrap ancho">
+  <div class="centro">
+    <h2 class="aparece">Webs que trabajan<br>para tu negocio.</h2>
+    <p class="entrada aparece">Rápidas, pensadas para el móvil y conectadas a tu asistente. Ábrelas y pruébalas.</p>
+  </div>
+  <div class="webs">
+    <article class="web aparece">
+      <div class="foto"><img src="img/web-inmobiliaria.jpg" alt="Web de ejemplo de una inmobiliaria" loading="lazy"></div>
+      <div class="texto"><span class="tipo">Inmobiliaria</span><h3>Hogar Manchego</h3><p>Valora tu vivienda en un minuto, mira los pisos en el mapa y habla con su asistente a cualquier hora.</p><a class="enlace" href="https://sergio-sysops.github.io/web-inmobiliaria/" target="_blank" rel="noopener">Ver la web</a></div>
+    </article>
+    <article class="web aparece">
+      <div class="foto"><img src="img/web-clinica.jpg" alt="Web de ejemplo de una clínica" loading="lazy"></div>
+      <div class="texto"><span class="tipo">Clínica · Salud</span><h3>Clínica Alba</h3><p>Tocas dónde te duele, la web te orienta y pides cita en un momento.</p><a class="enlace" href="https://sergio-sysops.github.io/web-clinica/" target="_blank" rel="noopener">Ver la web</a></div>
+    </article>
+    <article class="web aparece">
+      <div class="foto"><img src="img/web-gimnasio.jpg" alt="Web de ejemplo de un gimnasio" loading="lazy"></div>
+      <div class="texto"><span class="tipo">Gimnasio</span><h3>Pulso</h3><p>El dueño cambia horarios y precios desde el móvil, sin tocar código.</p><a class="enlace" href="https://sergio-sysops.github.io/web-gimnasio/" target="_blank" rel="noopener">Ver la web</a></div>
+    </article>
+    <article class="web aparece">
+      <div class="foto"><img src="img/web-tienda.jpg" alt="Web de ejemplo de una frutería" loading="lazy"></div>
+      <div class="texto"><span class="tipo">Comercio de barrio</span><h3>La Huerta de Carmen</h3><p>Pedidos por WhatsApp sin comisiones, con recogida o reparto.</p><a class="enlace" href="https://sergio-sysops.github.io/web-tienda/" target="_blank" rel="noopener">Ver la web</a></div>
+    </article>
+  </div>
+  <p class="nota">Son negocios de ejemplo, creados para enseñar cómo trabajamos.</p>
+</div></section>
+
+<!-- REDES Y CLON IA -->
+<section class="gris-fondo" id="redes"><div class="wrap ancho">
+  <div class="centro">
+    <h2 class="aparece">Haz que te conozcan.</h2>
+    <p class="entrada aparece">Vídeos y redes sociales sin tener que ponerte delante de la cámara cada semana.</p>
+  </div>
+  <div class="rejilla">
+    <div class="tarjeta grande aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/><path d="M19 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></svg>
+      <h3>Tu clon con IA</h3>
+      <p>Te grabamos una vez, unos minutos, y creamos tu clon digital con tu cara y tu voz. A partir de ahí, tus vídeos para Instagram, TikTok o YouTube salen sin volver a grabar: tú solo apruebas el texto.</p>
+      <ul class="lista-seguimiento">
+        <li><b>Una sola grabación</b><span>Y vídeos nuevos cada semana.</span></li>
+        <li><b>Tu voz de verdad</b><span>Clonada, no una voz de robot.</span></li>
+        <li><b>Siempre con tu permiso</b><span>Tu imagen es tuya y nadie más la usa.</span></li>
+        <li><b>Transparente</b><span>Los vídeos avisan de que están hechos con IA, como pide la ley.</span></li>
+      </ul>
+    </div>
+    <div class="tarjeta aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="#9b3cf0"/></svg>
+      <h3>Redes con IA</h3>
+      <p>Publicaciones, reels y respuestas a comentarios, con tu estilo y sin que te quite tiempo.</p>
+    </div>
+    <div class="tarjeta aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="15" height="14" rx="3"/><path d="M17 10l5-3v10l-5-3"/></svg>
+      <h3>Tu asistente, en vídeo</h3>
+      <p>Vídeos cortos donde se ve a tu asistente atendiendo de verdad. La mejor publicidad es verlo funcionar.</p>
+    </div>
+    <div class="tarjeta grande aparece">
+      <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+      <h3>Todo medido</h3>
+      <p>Cada mes ves qué vídeos y publicaciones te han traído más clientes, para hacer más de lo que funciona y menos de lo que no.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- SEGURIDAD -->
+<section class="oscuro centro" id="seguridad"><div class="wrap ancho">
+  <!-- 🕹️ Pantalla de máquina recreativa (07-11). Letra Press Start 2P en /fuentes (licencia OFL) -->
+  <div class="arcade" id="arcade">
+    <div class="arcade-marcador" aria-hidden="true"><span>1UP <b>00</b></span><span>HI-SCORE <b id="arcadePuntos">000000</b></span><span>NIVEL <b>99</b></span></div>
+    <svg class="arcade-escudo" viewBox="0 0 11 13" aria-hidden="true" shape-rendering="crispEdges">
+      <path fill="#22e3ff" d="M1 1h9v1H1zM0 2h11v6H0zM1 8h9v1H1zM2 9h7v1H2zM3 10h5v1H3zM4 11h3v1H4zM5 12h1v1H5z"/>
+      <path fill="#b44cff" d="M2 3h7v4H2zM3 7h5v1H3zM4 8h3v1H4z"/>
+      <path fill="#ff4fd8" d="M5 3h1v5H5zM3 5h5v1H3z"/>
+    </svg>
+    <p class="arcade-ante">— CIBERSEGURIDAD —</p>
+    <h2 class="arcade-titulo" aria-label="Tu negocio, protegido."><span id="arcadeTexto" aria-hidden="true">TU NEGOCIO,<br><span class="px">PROTEGIDO.</span></span><span class="arcade-cursor" aria-hidden="true"></span></h2>
+    <p class="entrada">Cuidamos tus ordenadores y todo lo que tu negocio tiene en internet y actuamos antes de que un problema llegue a serlo.</p>
+    <a class="arcade-start" href="#nivel1">▶ PULSA START</a>
+  </div>
+  <!-- START baja aquí (nivel 1) en vez de saltar al formulario: así se ve el resto de la web -->
+  <div class="pilares" id="nivel1" style="text-align:left">
+    <div class="pilar aparece">
+      <p class="paso-seg grad">01</p>
+      <h3>Prevenir</h3>
+      <p class="resumen">Cerramos las puertas antes de que alguien intente entrar.</p>
+      <ul>
+        <li><b>Revisión de seguridad</b><span>Buscamos los puntos débiles de tu web y tus sistemas, siempre con tu autorización por escrito.</span></li>
+        <li><b>Correo protegido</b><span>Que nadie pueda enviar correos haciéndose pasar por tu negocio.</span></li>
+        <li><b>Accesos seguros</b><span>Contraseñas fuertes y doble verificación en tus cuentas.</span></li>
+        <li><b>Equipos protegidos</b><span>Antivirus y actualizaciones al día en los ordenadores de tu negocio.</span></li>
+      </ul>
+    </div>
+    <div class="pilar aparece">
+      <p class="paso-seg grad">02</p>
+      <h3>Vigilar</h3>
+      <p class="resumen">Atentos día y noche, para que tú no tengas que estarlo.</p>
+      <ul>
+        <li><b>Disponibilidad</b><span>Comprobamos a todas horas que tu web funciona.</span></li>
+        <li><b>Filtraciones</b><span>Detectamos si tus cuentas o contraseñas aparecen expuestas.</span></li>
+        <li><b>Suplantaciones</b><span>Localizamos webs y perfiles falsos que usan tu identidad.</span></li>
+        <li><b>Caducidades</b><span>Dominio y certificados, siempre al día.</span></li>
+      </ul>
+    </div>
+    <div class="pilar aparece">
+      <p class="paso-seg grad">03</p>
+      <h3>Responder</h3>
+      <p class="resumen">Si algo ocurre, sabes qué pasa y qué hacer desde el primer minuto.</p>
+      <ul>
+        <li><b>Aviso inmediato</b><span>Te enteras antes que nadie, sin tecnicismos.</span></li>
+        <li><b>Plan de actuación</b><span>Pasos claros para frenar el problema y recuperar la normalidad.</span></li>
+        <li><b>Copias de seguridad</b><span>Tu información, guardada y lista para recuperarse.</span></li>
+        <li><b>Informe mensual</b><span>Qué hemos revisado, qué hemos encontrado y cómo está tu negocio.</span></li>
+      </ul>
+    </div>
+  </div>
+  <p class="regalo aparece">Primer mes de vigilancia gratis con cualquier plan de IA.</p>
+  <a class="arcade-continuar" href="#demo">▶ CONTINUAR → PEDIR DEMO</a>
+</div></section>
+
+<!-- PLANES -->
+<section id="planes"><div class="wrap ancho">
+  <div class="centro">
+    <h2 class="aparece">Elige por dónde empezar.</h2>
+    <p class="entrada aparece">Sin permanencia y con el mantenimiento incluido. Tras la demo te damos un precio cerrado, adaptado a tu negocio.</p>
+  </div>
+  <div class="planes">
+    <div class="plan aparece"><p class="eti"></p><h3>Web</h3><p>Una web que funciona y de la que te olvidas.</p>
+      <ul><li>Pensada para el móvil</li><li>Dominio y alojamiento incluidos</li><li>Cambios cada mes</li><li>Copias de seguridad</li></ul>
+      <a class="pildora sec" href="#webs">Ver ejemplos</a></div>
+    <div class="plan aparece"><p class="eti"></p><h3>Asistente de chat</h3><p>Para quien recibe preguntas por la web y WhatsApp.</p>
+      <ul><li>Responde las 24 horas</li><li>Web y WhatsApp</li><li>Te pasa los interesados</li><li>Informe mensual</li></ul>
+      <a class="pildora sec" href="#demo" data-interes="Chat web y WhatsApp">Me interesa</a></div>
+    <div class="plan destacado aparece"><p class="eti">Recomendado</p><h3>Recepcionista IA</h3><p>Para cualquier negocio que no quiere perder una llamada.</p>
+      <ul><li>Coge el teléfono por ti</li><li>Da citas y toma recados</li><li>Resumen de cada llamada</li><li>Minutos a tu medida</li></ul>
+      <a class="pildora" href="#demo" data-interes="Asistente de voz (teléfono)">Probarlo</a></div>
+    <div class="plan aparece"><p class="eti"></p><h3>Ciberix Completo</h3><p>Voz, chat, WhatsApp, agenda y seguimiento.</p>
+      <ul><li>Recepcionista IA</li><li>Chat web y WhatsApp</li><li>Web incluida</li><li>Seguimiento y presupuestos</li></ul>
+      <a class="pildora sec" href="#demo" data-interes="Varias cosas">Hablemos</a></div>
+  </div>
+  <p class="nota">También hacemos automatizaciones a medida. <a href="#demo">Cuéntanos qué necesitas</a></p>
+</div></section>
+
+<!-- PREGUNTAS -->
+<section id="preguntas"><div class="wrap">
+  <h2 class="centro aparece">Preguntas frecuentes.</h2>
+  <div class="preguntas">
+    <details><summary>¿Cuánto tarda en estar funcionando?</summary><p>Normalmente unos pocos días desde que nos das la información de tu negocio.</p></details>
+    <details><summary>¿Necesito saber de informática?</summary><p>No. Lo montamos y lo mantenemos nosotros. Tú solo nos dices qué quieres.</p></details>
+    <details><summary>¿También os ocupáis de los ordenadores?</summary><p>Sí. Revisamos tus equipos, dejamos el antivirus y las actualizaciones al día y te decimos si estás pagando de más por algo que no necesitas.</p></details>
+    <details><summary>¿Mis clientes sabrán que hablan con una IA?</summary><p>Sí. El asistente se presenta como asistente virtual, como exige la ley europea. Habla con naturalidad y, si algo no lo sabe, toma el recado.</p></details>
+    <details><summary>¿Tengo que cambiar mi número?</summary><p>No. Puedes desviar a tu asistente las llamadas que no coges, o usar un número nuevo solo para él.</p></details>
+    <details><summary>¿Y los datos de mis clientes?</summary><p>Se tratan según el RGPD y firmamos contigo un contrato de encargado del tratamiento. Tus datos son tuyos.</p></details>
+    <details><summary>¿Cuánto cuesta?</summary><p>Depende de lo que necesites. Después de probarlo te damos un precio cerrado: un pago para ponerlo en marcha y una cuota mensual, sin sorpresas.</p></details>
+    <details><summary>¿Puedo darme de baja cuando quiera?</summary><p>Sí. Sin permanencia: avisas con 30 días y listo.</p></details>
+  </div>
+</div></section>
+
+<!-- DEMO -->
+<section class="gris-fondo centro" id="demo"><div class="wrap">
+  <h2 class="aparece">Pruébalo. <span class="grad">Gratis y sin compromiso.</span></h2>
+  <p class="entrada aparece">Preparamos un asistente con tus datos para que lo llames, le preguntes y le pidas una cita.</p>
+  <form id="formulario">
+    <div class="tipo-cliente" role="radiogroup" aria-label="¿Eres negocio o particular?">
+      <label><input type="radio" name="tipo" value="negocio" checked><span>Negocio</span></label>
+      <label><input type="radio" name="tipo" value="particular"><span>Particular</span></label>
+    </div>
+    <input name="negocio" required maxlength="80" placeholder="Nombre del negocio" aria-label="Nombre del negocio" autocomplete="organization">
+    <select name="interes" required aria-label="¿Qué te interesa?"><option value="" disabled selected hidden>¿Qué te interesa?</option><option>Asistente de voz (teléfono)</option><option>Chat web y WhatsApp</option><option>Una web</option><option>Vídeos y redes (clon IA)</option><option>Seguridad</option><option>Varias cosas</option></select>
+    <input name="nombre" required maxlength="60" placeholder="Tu nombre" aria-label="Tu nombre" autocomplete="name">
+    <input name="telefono" required type="tel" placeholder="Teléfono" aria-label="Teléfono" autocomplete="tel" maxlength="20"
+           pattern="(?=(?:\D*\d){9})[+0-9 \(\)\-]{9,20}" title="Solo números (mínimo 9). Puedes poner +, espacios o guiones.">
+    <!-- Trampa para robots: una persona no la ve ni la rellena. Si llega rellena, no se envía nada. -->
+    <input name="web" class="trampa" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label class="casilla"><input type="checkbox" name="acepto" required> <span>Acepto que Ciberix me contacte para preparar la demo, según la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</span></label>
+    <p class="pequeno info-datos"><b>Responsable:</b> Ciberix. <b>Para qué:</b> preparar tu demo. <b>Quién más los ve:</b> solo Zoho (UE), que recibe el formulario. <b>Tus derechos:</b> ver, corregir o borrar tus datos escribiendo a hola@ciberix.es. <a href="privacidad.html" target="_blank" rel="noopener">Más información</a></p>
+    <button class="pildora" type="submit">Pedir mi demo</button>
+    <p class="pequeno" id="formEstado" role="status" aria-live="polite">Te contestamos en 24 horas. También puedes escribirnos a <a href="mailto:hola@ciberix.es">hola@ciberix.es</a></p>
+  </form>
+</div></section>
+
+<footer><div class="wrap">
+  <span>© 2026 Ciberix · IA y seguridad para tu negocio · España</span>
+  <span><a href="mailto:hola@ciberix.es">hola@ciberix.es</a><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a></span>
+</div></footer>
+
+<dialog class="ventana-demo" id="ventanaDemo" aria-labelledby="vdTitulo">
+  <button class="vd-cerrar" id="vdCerrar" type="button" aria-label="Cerrar">✕</button>
+  <h2 id="vdTitulo">Pruébalo. <span class="grad">Gratis y sin compromiso.</span></h2>
+  <p class="entrada">Preparamos un asistente con tus datos para que lo llames, le preguntes y le pidas una cita.</p>
+  <div id="vdHueco"></div>
+</dialog>
+
+<script>
+// El recuadro con el logo vivo: primero se "reproduce" la animación y, al bajar, crece
+(function () {
+  const pista = document.getElementById('asistente');
+  const ventana = document.getElementById('ventana');
+  const lienzo = document.getElementById('lienzo');
+  const ctx = lienzo.getContext('2d');
+  const logoCentro = document.getElementById('logoCentro');
+  const logoImg = document.getElementById('logoImg');
+  const frase = document.getElementById('frase');
+  const fraseResto = document.getElementById('fraseResto');
+  const entre = (a, b, p) => a + (b - a) * p;      // valor intermedio entre a y b
+  const tramo = (x, desde, hasta) => Math.min(1, Math.max(0, (x - desde) / (hasta - desde)));
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // ---------- 1) LA ANIMACIÓN: unos y ceros en doble hélice que forman la X ----------
+  const N = innerWidth < 620 ? 380 : 700;
+  let W, H, S, cx, cy, puntos = [], bits = [], logoListo = false;
+
+  // Dibuja la X en un lienzo invisible y apunta los píxeles pintados: ahí irá cada bit
+  function medir() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    lienzo.width = W * dpr; lienzo.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const rv = ventana.getBoundingClientRect(), ri = logoImg.getBoundingClientRect();
+    S = ri.width;
+    cx = W / 2 + (ri.left + ri.width / 2) - (rv.left + rv.width / 2);   // centro del logo
+    cy = H / 2 + (ri.top + ri.height / 2) - (rv.top + rv.height / 2);
+    const k = S / 100, oculto = document.createElement('canvas');
+    oculto.width = oculto.height = Math.ceil(S);
+    const o = oculto.getContext('2d');
+    o.lineCap = 'round'; o.lineWidth = 15 * k;
+    o.beginPath(); o.moveTo(20 * k, 20 * k); o.lineTo(80 * k, 80 * k);
+    o.moveTo(20 * k, 80 * k); o.lineTo(58 * k, 42 * k); o.stroke();
+    o.fillRect(68 * k, 12 * k, 20 * k, 20 * k);
+    const L = oculto.width;
+    if (L < 1) { puntos = [[cx, cy]]; return; }          // si el logo no se ve, no rompe nada
+    const datos = o.getImageData(0, 0, L, L).data;
+    const paso = Math.max(3, Math.round(S / 38));
+    puntos = [];
+    for (let y = 0; y < L; y += paso)
+      for (let x = 0; x < L; x += paso)
+        if (datos[(y * L + x) * 4 + 3] > 128) puntos.push([cx - S / 2 + x, cy - S / 2 + y]);
+  }
+  const alAzar = () => puntos[Math.floor(Math.random() * puntos.length)];
+  medir();
+  for (let i = 0; i < N; i++) bits.push({
+    u: Math.random(), hebra: i % 2, txt: Math.random() < .5 ? '0' : '1',
+    retraso: Math.random() * .6, destino: alAzar()
+  });
+
+  const suave = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  const cian = [34, 227, 255], morado = [180, 76, 255];
+  const color = f => { f = Math.min(1, Math.max(0, f));
+    return `rgb(${cian.map((v, i) => Math.round(v + (morado[i] - v) * f)).join(',')})`; };
+
+  let inicio = null;
+  function dibujar(ahora) {
+    const t = (ahora - inicio) / 1000;                 // segundos desde que empezó
+    ctx.clearRect(0, 0, W, H);
+    const ancho = Math.min(W, 900) * .85, alto = Math.min(H, 506) * .26;
+    for (const b of bits) {
+      const ang = b.u * Math.PI * 4 + t * 1.4 + b.hebra * Math.PI;   // giro de la hélice
+      const hx = W / 2 + (b.u - .5) * ancho;
+      const hy = H / 2 + Math.sin(ang) * alto;
+      const z = (Math.cos(ang) + 1) / 2;                              // 0 lejos, 1 cerca
+      const k = suave(tramo(t, 2 + b.retraso, 3.3 + b.retraso));      // vuelo hacia la X
+      const x = hx + (b.destino[0] - hx) * k, y = hy + (b.destino[1] - hy) * k;
+      let alfa = (.25 + z * .75) * (1 - k) + .95 * k;
+      if (t > 4) alfa *= 1 - tramo(t, 4, 5.2);                        // se apagan
+      ctx.globalAlpha = alfa;
+      ctx.fillStyle = color(((b.u)) * (1 - k) + ((b.destino[0] + b.destino[1] - cx - cy + S) / (2 * S)) * k);
+      ctx.font = `${((9 + z * 6) * (1 - k) + 8 * k).toFixed(1)}px ui-monospace, monospace`;
+      ctx.fillText(b.txt, x, y);
+    }
+    if (t > 3.7 && !logoListo) {                        // aparece el logo de verdad
+      logoListo = true; mover();
+      setTimeout(() => logoCentro.style.transition = 'none', 1200);
+    }
+    if (t < 5.4) requestAnimationFrame(dibujar); else ctx.clearRect(0, 0, W, H);
+  }
+  // Empieza cuando el recuadro se ve en pantalla (como un vídeo con reproducción automática)
+  new IntersectionObserver((es, obs) => es.forEach(e => {
+    if (e.isIntersecting) { obs.disconnect(); requestAnimationFrame(a => { inicio = a; dibujar(a); }); }
+  }), {threshold: .5}).observe(ventana);
+
+  // ---------- 2) EL CRECIMIENTO AL BAJAR (la fórmula del vídeo de ayer) ----------
+  function mover() {
+    const r = pista.getBoundingClientRect();
+    const avance = tramo(-r.top, 0, pista.offsetHeight - innerHeight);   // 0 a 1
+    const p = tramo(avance, .05, .55);                                    // crecer
+    const w0 = Math.min(900, innerWidth * .9), h0 = Math.min(506, innerWidth * .506);
+    ventana.style.width = entre(w0, innerWidth, p) + 'px';
+    ventana.style.height = entre(h0, innerHeight, p) + 'px';
+    ventana.style.borderRadius = entre(28, 0, p) + 'px';
+    const quedarse = 1 - tramo(avance, .5, .6);                          // el logo se va
+    logoCentro.style.opacity = logoListo ? quedarse : 0;
+    lienzo.style.opacity = quedarse;
+    frase.style.opacity = tramo(avance, .6, .72);                         // llega la frase
+    fraseResto.style.opacity = tramo(avance, .72, .84);                  // y luego el texto y las cifras
+    fraseResto.style.transform = `translateY(${entre(30, 0, tramo(avance, .72, .84))}px)`;
+    frase.style.transform = `translate(-50%,-50%) scale(${entre(.92, 1, tramo(avance, .6, .72))})`;
+  }
+  addEventListener('scroll', () => requestAnimationFrame(mover), {passive: true});
+  addEventListener('resize', () => { medir(); bits.forEach(b => b.destino = alAzar()); mover(); });
+  mover();
+})();
+
+// Banco de bits en la sección de seguridad (como un banco de peces: 3 reglas sencillas)
+(function () {
+  const sec = document.getElementById('seguridad');
+  const lienzo = document.createElement('canvas');
+  lienzo.className = 'banco';
+  sec.prepend(lienzo);
+  const ctx = lienzo.getContext('2d');
+  let W, H;
+  function medir() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = sec.clientWidth; H = sec.clientHeight;
+    lienzo.width = W * dpr; lienzo.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  medir();
+  addEventListener('resize', medir);
+
+  const movil = innerWidth < 620;
+  const MAXIMO = movil ? 90 : 220;
+  const peces = [];
+  function nuevo(x, y, ang, disparo = 0) {
+    const a = ang ?? Math.random() * Math.PI * 2, v = disparo ? 5 + Math.random() * 3 : 1.2 + Math.random();
+    peces.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, c: Math.random(), tam: 12 + Math.random() * 7, impulso: disparo, rojo: !!disparo });
+    if (peces.length > MAXIMO) peces.shift();          // si hay demasiados, se va el más viejo
+  }
+  for (let i = 0; i < (movil ? 50 : 120); i++) nuevo(Math.random() * W, Math.random() * H);
+
+  // El ratón: los peces lo esquivan, como si lo vigilaran
+  const raton = { x: -1e4, y: -1e4 };
+  const posicion = e => { const r = sec.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  sec.addEventListener('mousemove', e => { [raton.x, raton.y] = posicion(e); });
+  sec.addEventListener('mouseleave', () => { raton.x = raton.y = -1e4; });
+
+  // Al pinchar: aparece la X de Ciberix y nace un grupo nuevo que sale disparado
+  const destellos = [];
+  sec.addEventListener('click', e => {
+    if (e.target.closest('a,button')) return;
+    const [x, y] = posicion(e);
+    if (!matchMedia('(hover: hover)').matches) {        // móvil: no hay cursor, enseño la mira un momento
+      const m = document.createElement('div'); m.className = 'mira';
+      m.style.left = x + 'px'; m.style.top = y + 'px';
+      sec.appendChild(m); m.addEventListener('animationend', () => m.remove());
+      setTimeout(() => m.remove(), 800);
+    }
+    // ¿Has pinchado encima de una X? Entonces la cazas: se vuelve roja y sale huyendo
+    let cazada = null, mejor = 22 * 22;
+    for (const p of peces) {
+      const d2 = (p.x - x) ** 2 + (p.y - y) ** 2;
+      if (!p.rojo && d2 < mejor) { mejor = d2; cazada = p; }
+    }
+    if (cazada) {
+      const a = Math.random() * Math.PI * 2;
+      cazada.rojo = true; cazada.impulso = 1;
+      cazada.vx = Math.cos(a) * 7; cazada.vy = Math.sin(a) * 7;
+    } else {
+      nuevo(x, y, undefined, 1);                          // si no, nace una roja y sale disparada
+    }
+  });
+
+  // El mini icono de Ciberix se dibuja una vez en un lienzo aparte y luego se "estampa" en cada pez
+  function hacerIcono(color1, color2, colorBit) {
+    const lienzoIcono = document.createElement('canvas');
+    lienzoIcono.width = lienzoIcono.height = 64;
+    const c = lienzoIcono.getContext('2d'), k = .64;
+    const g = c.createLinearGradient(0, 0, 64, 64);
+    g.addColorStop(0, color1); g.addColorStop(1, color2);
+    c.strokeStyle = g; c.lineCap = 'round'; c.lineWidth = 15 * k;
+    c.beginPath(); c.moveTo(20 * k, 20 * k); c.lineTo(80 * k, 80 * k);   // trazo largo de la X
+    c.moveTo(20 * k, 80 * k); c.lineTo(58 * k, 42 * k); c.stroke();       // trazo cortado
+    c.fillStyle = colorBit; c.fillRect(68 * k, 12 * k, 20 * k, 20 * k);  // el bit de la esquina
+    return lienzoIcono;
+  }
+  const icono = hacerIcono('#22e3ff', '#b44cff', '#22e3ff');          // los del banco
+  const iconoRojo = hacerIcono('#ff6b7d', '#ff1f3d', '#ff9aa6');      // los que nacen al pinchar
+  const cian = [34, 227, 255], morado = [180, 76, 255];
+  const color = f => `rgb(${cian.map((v, i) => Math.round(v + (morado[i] - v) * f)).join(',')})`;
+
+  function dibujarX(x, y, tam, alfa) {               // el símbolo de Ciberix (X + el bit)
+    const k = tam / 100;
+    ctx.save(); ctx.translate(x - tam / 2, y - tam / 2); ctx.globalAlpha = alfa;
+    const g = ctx.createLinearGradient(0, 0, tam, tam);
+    g.addColorStop(0, '#22e3ff'); g.addColorStop(1, '#b44cff');
+    ctx.strokeStyle = g; ctx.lineCap = 'round'; ctx.lineWidth = 15 * k;
+    ctx.beginPath(); ctx.moveTo(20 * k, 20 * k); ctx.lineTo(80 * k, 80 * k);
+    ctx.moveTo(20 * k, 80 * k); ctx.lineTo(58 * k, 42 * k); ctx.stroke();
+    ctx.fillStyle = '#22e3ff'; ctx.fillRect(68 * k, 12 * k, 20 * k, 20 * k);
+    ctx.restore();
+  }
+
+  function paso() {
+    // Encima del texto no puede haber estela (lo taparía de negro): se borra cada vez
+    ctx.globalAlpha = 1; ctx.clearRect(0, 0, W, H);
+
+    for (const p of peces) {
+      let sx = 0, sy = 0, ax = 0, ay = 0, cx = 0, cy = 0, n = 0;
+      for (const o of peces) {
+        if (o === p) continue;
+        const dx = o.x - p.x, dy = o.y - p.y, d2 = dx * dx + dy * dy;
+        if (d2 < 3600) {                               // vecinos a menos de 60 px
+          n++; ax += o.vx; ay += o.vy; cx += o.x; cy += o.y;
+          if (d2 < 484) { sx -= dx; sy -= dy; }        // regla 1: no chocar
+        }
+      }
+      if (n) {
+        p.vx += (ax / n - p.vx) * .05; p.vy += (ay / n - p.vy) * .05;        // regla 2: misma dirección
+        p.vx += (cx / n - p.x) * .004; p.vy += (cy / n - p.y) * .004;        // regla 3: no quedarse solo
+      }
+      p.vx += sx * .05; p.vy += sy * .05;
+      const rx = p.x - raton.x, ry = p.y - raton.y, rd = Math.hypot(rx, ry);
+      if (rd < 120) { p.vx += rx / rd * .6; p.vy += ry / rd * .6; }          // esquivar el ratón
+      const v = Math.hypot(p.vx, p.vy), lim = Math.min(3 + p.impulso * 6, Math.max(1.2, v));
+      p.impulso *= .96;                                    // los disparados van frenando poco a poco
+      p.vx = p.vx / v * lim; p.vy = p.vy / v * lim;
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;             // salen por un lado
+      if (p.y < -10) p.y = H + 10; if (p.y > H + 10) p.y = -10;             // y entran por el otro
+
+      // Dibujo: el mini icono, girado para que el bit de la esquina vaya delante, como la cabeza del pez
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(Math.atan2(p.vy, p.vx) + Math.PI / 4);
+      ctx.globalAlpha = .9;
+      const t = p.tam * (1 + p.impulso * .7);              // el recién nacido sale algo más grande y encoge
+      ctx.drawImage(p.rojo ? iconoRojo : icono, -t / 2, -t / 2, t, t);   // el tuyo, en rojo
+      ctx.restore();
+    }
+    for (let i = destellos.length - 1; i >= 0; i--) {
+      const d = destellos[i];
+      dibujarX(d.x, d.y, 70 + (1 - d.vida) * 40, d.vida);
+      d.vida -= .02;
+      if (d.vida <= 0) destellos.splice(i, 1);
+    }
+  }
+
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { paso(); return; }
+  // Solo se mueve cuando la sección se ve (no gasta batería si estás en otra parte)
+  let visible = false;
+  new IntersectionObserver(es => es.forEach(e => {
+    const antes = visible; visible = e.isIntersecting;
+    if (visible && !antes) requestAnimationFrame(bucle);
+  })).observe(sec);
+  function bucle() { if (!visible) return; paso(); requestAnimationFrame(bucle); }
+})();
+
+// Aparecer suave al bajar
+const obs = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('ya'); obs.unobserve(e.target); }
+}), {threshold: .15});
+document.querySelectorAll('.aparece').forEach(el => obs.observe(el));
+
+// Formulario → Zoho Forms (servidores en la UE). Se envía por detrás: el cliente no sale de la web.
+// Nombres internos de Zoho: SingleLine=negocio, Dropdown=interés, SingleLine1=nombre, SingleLine2=teléfono, DecisionBox=acepto
+(function () {
+  const ZOHO = 'https://forms.zohopublic.eu/sergiocib1/form/DemoCiberix/formperma/YqlYOTMx99mU0NARBgCeSbyR6YlPFA3cVsJuLzxpPsw/htmlRecords/submit';
+  const f = document.getElementById('formulario'), estado = document.getElementById('formEstado');
+  const boton = f.querySelector('button[type="submit"]');
+  const esParticular = () => f.tipo && f.tipo.value === 'particular';
+  f.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener('change', () => {
+    f.negocio.hidden = esParticular(); f.negocio.required = !esParticular();
+  }));
+  const gracias = () => {
+    f.innerHTML = '<p class="gracias" role="status">✅ <b>¡Recibido!</b><br>Te llamamos en menos de 24 horas para preparar tu demo.</p>';
+  };
+  f.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    if (f.web.value) { gracias(); return; }                 // robot: hacemos como que sí, pero no se envía nada
+    const datos = new FormData();
+    datos.append('zf_referrer_name', 'web ciberix.es');
+    datos.append('zf_redirect_url', '');
+    datos.append('zc_gad', '');
+    datos.append('SingleLine', esParticular() ? 'Particular' : f.negocio.value.trim());
+    datos.append('Dropdown', f.interes.value);
+    datos.append('SingleLine1', f.nombre.value.trim());
+    datos.append('SingleLine2', f.telefono.value.trim());
+    datos.append('DecisionBox', 'on');
+    boton.disabled = true; boton.textContent = 'Enviando…';
+    try {
+      // Zoho no deja leer su respuesta desde otra web (no-cors): si la red no falla, damos el envío por bueno
+      await fetch(ZOHO, { method: 'POST', body: datos, mode: 'no-cors' });
+      gracias();
+    } catch (e) {
+      boton.disabled = false; boton.textContent = 'Pedir mi demo';
+      estado.innerHTML = '⚠️ No se ha podido enviar (¿sin conexión?). Prueba otra vez o escríbenos a <a href="mailto:hola@ciberix.es">hola@ciberix.es</a>';
+    }
+  });
+})();
+
+// 📝 Botones "Pedir demo": abren el formulario en una ventana encima, sin saltar al final de la web.
+// Es el MISMO formulario (se mueve dentro de la ventana y vuelve a su sitio al cerrar), así el envío a Zoho no cambia.
+(function () {
+  const ventana = document.getElementById('ventanaDemo');
+  if (!ventana || typeof ventana.showModal !== 'function') return;   // navegador muy viejo: salta al final como antes
+  const form = document.getElementById('formulario'), hueco = document.getElementById('vdHueco');
+  const sitio = document.createComment('aquí vive el formulario');
+  form.parentNode.insertBefore(sitio, form);
+  document.addEventListener('click', e => {
+    const enlace = e.target.closest('a[href="#demo"]');
+    if (!enlace || ventana.open) return;
+    e.preventDefault();
+    hueco.appendChild(form);
+    const interes = enlace.dataset.interes;
+    if (interes && form.interes && !form.interes.value) form.interes.value = interes;
+    document.documentElement.classList.add('vd-abierta');
+    ventana.showModal();
+    const primero = form.querySelector('input:not(.trampa):not([type=radio]):not([hidden])');
+    if (primero && matchMedia('(min-width: 621px)').matches) primero.focus();
+  });
+  document.getElementById('vdCerrar').addEventListener('click', () => ventana.close());
+  ventana.addEventListener('click', e => { if (e.target === ventana) ventana.close(); });   // tocar fuera = cerrar
+  ventana.addEventListener('close', () => {
+    sitio.parentNode.insertBefore(form, sitio.nextSibling);
+    document.documentElement.classList.remove('vd-abierta');
+  });
+})();
+
+// 🌙 Modo día / noche: sigue al aparato salvo que el usuario elija con el botón (se recuerda)
+(function () {
+  const raiz = document.documentElement, boton = document.getElementById('botonTema');
+  const oscuroSistema = matchMedia('(prefers-color-scheme: dark)');
+  const esNoche = () => raiz.dataset.tema ? raiz.dataset.tema === 'noche' : oscuroSistema.matches;
+  function pintar() {
+    const noche = esNoche();
+    raiz.classList.toggle('es-noche', noche);
+    boton.setAttribute('aria-label', noche ? 'Cambiar a modo día' : 'Cambiar a modo noche');
+    boton.title = noche ? 'Modo día' : 'Modo noche';
+    texto.textContent = noche ? '☀️  Modo día' : '🌙  Modo noche';
+  }
+  const texto = document.getElementById('temaTexto');
+  function cambiar() {
+    raiz.dataset.tema = esNoche() ? 'dia' : 'noche';
+    try { localStorage.setItem('tema', raiz.dataset.tema); } catch (e) { /* sin memoria, no pasa nada */ }
+    pintar();
+  }
+  boton.addEventListener('click', cambiar);
+  texto.addEventListener('click', cambiar);
+  oscuroSistema.addEventListener('change', pintar);   // si el móvil cambia solo a oscuro por la noche
+  pintar();
+})();
+
+// ☰ Menú del móvil: abre/cierra el panel con las secciones
+(function () {
+  const cabecera = document.querySelector('.menu'), boton = document.getElementById('hamburguesa');
+  const panel = document.getElementById('enlacesMenu');
+  function poner(abierto) {
+    cabecera.classList.toggle('menu-abierto', abierto);
+    boton.setAttribute('aria-expanded', abierto);
+    boton.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+  }
+  boton.addEventListener('click', () => poner(!cabecera.classList.contains('menu-abierto')));
+  panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => poner(false)));      // al elegir sección
+  document.addEventListener('click', e => { if (!cabecera.contains(e.target)) poner(false); });   // al tocar fuera
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') poner(false); });
+})();
+
+// 🎮 Secreto: código Konami → modo retro 30 segundos
+(function () {
+  const CODIGO = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
+  const DURACION = 30;
+  let pos = 0, quedan = 0, reloj = null, cartel = null;
+
+  function avanzar(tecla) {
+    if (tecla === CODIGO[pos]) pos++;
+    else if (tecla === 'arrowup') pos = (pos >= 1 && CODIGO[pos - 1] === 'arrowup') ? 2 : 1; // ↑↑↑ sigue valiendo
+    else pos = 0;
+    if (pos === CODIGO.length) { pos = 0; activar(); }
+  }
+
+  // Ordenador: teclado (no cuenta si estás escribiendo en el formulario)
+  document.addEventListener('keydown', ev => {
+    if (ev.key === 'Escape' && quedan) { salir(); return; }
+    if (ev.target instanceof Element && ev.target.closest('input, textarea, select')) return;
+    avanzar(ev.key.toLowerCase());
+  });
+
+  // Móvil: deslizar ↑↑↓↓←→←→ y luego dos toques (B y A)
+  let x0 = 0, y0 = 0;
+  document.addEventListener('touchstart', ev => { x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY; }, {passive: true});
+  document.addEventListener('touchend', ev => {
+    const dx = ev.changedTouches[0].clientX - x0, dy = ev.changedTouches[0].clientY - y0;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 12) { avanzar(pos >= 8 ? CODIGO[pos] : 'toque'); return; }
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 30) return;
+    // El dedo hacia arriba = flecha arriba
+    avanzar(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'arrowright' : 'arrowleft') : (dy < 0 ? 'arrowup' : 'arrowdown'));
+  }, {passive: true});
+
+  // Musiquilla de 8 bits hecha con código (sin descargar nada)
+  function musiquilla() {
+    try {
+      const ac = new (window.AudioContext || window.webkitAudioContext)();
+      [523, 659, 784, 1047, 784, 1047].forEach((f, i) => {
+        const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + i * 0.09;
+        o.type = 'square'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.04, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.085);
+        o.connect(g).connect(ac.destination); o.start(t); o.stop(t + 0.09);
+      });
+      setTimeout(() => ac.close(), 1000);
+    } catch (e) { /* sin sonido, no pasa nada */ }
+  }
+
+  function pintar() {
+    cartel.querySelector('.cuenta').textContent = String(quedan).padStart(2, '0');
+  }
+
+  function activar() {
+    quedan = DURACION;
+    if (!cartel) {
+      cartel = document.createElement('div');
+      cartel.id = 'retroCartel';
+      cartel.setAttribute('role', 'status');
+      cartel.innerHTML = '<span><span class="parpadeo">▶</span> Modo retro <span class="largo">desbloqueado</span> · <span class="cuenta"></span></span>' +
+                         '<button type="button">Salir [Esc]</button>';
+      cartel.querySelector('button').addEventListener('click', salir);
+      document.body.appendChild(cartel);
+      document.documentElement.classList.add('retro');
+      musiquilla();
+    }
+    pintar();
+    clearInterval(reloj);
+    reloj = setInterval(() => { quedan--; if (quedan <= 0) salir(); else pintar(); }, 1000);
+  }
+
+  function salir() {
+    clearInterval(reloj); quedan = 0;
+    document.documentElement.classList.remove('retro');
+    if (cartel) { cartel.remove(); cartel = null; }
+  }
+})();
+
+// 🕹️ Recreativa de Seguridad: el título se escribe letra a letra y el marcador sube.
+// Sin JavaScript se ve ya escrito (el texto está en el HTML).
+(function () {
+  const caja = document.getElementById('arcade');
+  const texto = document.getElementById('arcadeTexto');
+  const puntos = document.getElementById('arcadePuntos');
+  if (!caja || !texto || !puntos) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { puntos.textContent = '999999'; return; }
+  const partes = [['TU NEGOCIO,', ''], ['\n', ''], ['PROTEGIDO.', 'px']];
+  texto.textContent = '';
+  function teclear() {
+    let p = 0, l = 0, destino = texto, total = 0;
+    const paso = setInterval(() => {
+      const [trozo, clase] = partes[p];
+      if (trozo === '\n') { texto.append(document.createElement('br')); p++; return; }
+      if (l === 0) {
+        destino = texto;
+        if (clase) { destino = document.createElement('span'); destino.className = clase; texto.append(destino); }
+      }
+      destino.append(trozo[l]); l++; total += 50;
+      puntos.textContent = String(total * 47).padStart(6, '0').slice(-6);
+      if (l === trozo.length) { p++; l = 0; }
+      if (p === partes.length) { clearInterval(paso); puntos.textContent = '999999'; }
+    }, 90);
+  }
+  new IntersectionObserver((e, o) => {
+    if (e[0].isIntersecting) { teclear(); o.disconnect(); }
+  }, { threshold: .5 }).observe(caja);
+})();
+</script>
+<!-- CONTADOR PROPIO (PRUEBA local): cambiar la dirección al publicar --><script defer src="http://127.0.0.1:8006/chivato.js" data-sitio="ciberix"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+# ============================================================
+#  Cabeceras de seguridad de ciberix.es (servidor Apache de IONOS)
+#  Preparado el 07-11-2026. Comprobar al publicar con:
+#    https://securityheaders.com   y   https://observatory.mozilla.org
+# ============================================================
+
+# 1. Siempre por HTTPS (si alguien entra por http://, se le manda a https://)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+<IfModule mod_headers.c>
+  # 2. El navegador recuerda 1 año que esta web solo va por HTTPS
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  # 3. Qué puede cargar la página (CSP): solo cosas nuestras, + enviar el formulario a Zoho
+  #    y avisar al contador. Si alguien consiguiera meter código, no podría mandar datos a otro sitio.
+  #    ⚠️ Al publicar: cambiar "https://stats.ciberix.es" por la dirección real del contador (o quitarla).
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://stats.ciberix.es; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://stats.ciberix.es; font-src 'self'; connect-src 'self' https://forms.zohopublic.eu https://stats.ciberix.es; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://forms.zohopublic.eu; frame-ancestors 'none'; upgrade-insecure-requests"
+
+  # 4. Nadie puede meter la web dentro de otra (evita el "clickjacking")
+  Header always set X-Frame-Options "DENY"
+
+  # 5. El navegador no adivina tipos de archivo (evita trucos con archivos disfrazados)
+  Header always set X-Content-Type-Options "nosniff"
+
+  # 6. Al pinchar un enlace a otra web, solo se le dice "vengo de ciberix.es", no la página exacta
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # 7. La web no necesita cámara, micro, ubicación… → se prohíben
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+
+  # 8. No decir qué servidor ni versión usamos (menos pistas para un atacante)
+  Header unset X-Powered-By
+</IfModule>
+
+# 9. No enseñar la lista de archivos de una carpeta
+Options -Indexes
+
+# 10. No servir archivos ocultos ni copias (.htaccess, .git, .bak, ~…)
+<FilesMatch "(^\.|\.(bak|old|orig|sqlite3?|log)$|~$)">
+  Require all denied
+</FilesMatch>

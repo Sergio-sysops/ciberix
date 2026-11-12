@@ -1,0 +1,48 @@
+/* Páginas legales de Ciberix: mismos colores que la web, día y noche */
+:root{
+  --negro:#1d1d1f; --gris:#6e6e73; --claro:#f5f5f7; --blanco:#fff; --linea:#d2d2d7;
+  --enlace:#0071e3; --hueco:#fff3b0; --hueco-texto:#5c4a00;
+  --grad:linear-gradient(90deg,#16b8d8,#9b3cf0);
+  color-scheme:light;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-tema="dia"]){
+    --negro:#f5f5f7; --gris:#a1a1a6; --claro:#101012; --blanco:#000; --linea:#3a3a3c;
+    --enlace:#2997ff; --hueco:#4a3d00; --hueco-texto:#ffe680; color-scheme:dark;
+  }
+}
+:root[data-tema="noche"]{
+  --negro:#f5f5f7; --gris:#a1a1a6; --claro:#101012; --blanco:#000; --linea:#3a3a3c;
+  --enlace:#2997ff; --hueco:#4a3d00; --hueco-texto:#ffe680; color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Ubuntu Sans","Segoe UI",Roboto,sans-serif;
+  color:var(--negro);background:var(--blanco);-webkit-font-smoothing:antialiased;line-height:1.6;font-size:16px}
+a{color:var(--enlace);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 22px}
+header{border-bottom:1px solid var(--linea)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:52px}
+.marca{display:flex;align-items:center;gap:8px;color:var(--negro);font-weight:700;font-size:19px;letter-spacing:-.02em}
+.marca:hover{text-decoration:none}
+.marca img{width:24px;height:24px}
+header nav a{font-size:13px}
+main{padding:48px 0 64px}
+h1{font-size:clamp(30px,6vw,44px);line-height:1.1;letter-spacing:-.02em;margin-bottom:8px}
+h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fecha{color:var(--gris);font-size:14px;margin-bottom:32px}
+h2{font-size:21px;letter-spacing:-.01em;margin:36px 0 10px}
+p,li{margin-bottom:10px}
+ul{padding-left:22px}
+table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--linea)}
+th{background:var(--claro);font-weight:600}
+.tabla{overflow-x:auto}
+.caso{background:var(--claro);border-radius:14px;padding:16px 18px 8px;margin:12px 0}
+.caso h3{font-size:17px;margin-bottom:8px}
+.caso p{margin-bottom:8px;font-size:15px}
+/* Datos que faltan: se ven en amarillo para no olvidarlos antes de publicar */
+.hueco{background:var(--hueco);color:var(--hueco-texto);padding:1px 6px;border-radius:5px;font-weight:600}
+footer{background:var(--claro);font-size:12px;color:var(--gris);padding:24px 0 36px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+footer a{color:var(--gris);margin-right:16px}
